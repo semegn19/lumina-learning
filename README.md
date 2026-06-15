@@ -64,7 +64,7 @@
 ## 📁 Project Structure
 
 ```text
-studycraft-kit/
+lumina-learning/
 ├── src/
 │   ├── assets/               # Static images, sample banners, and avatars
 │   ├── components/           # Reusable UI component library
@@ -200,4 +200,4 @@ The frontend integrates with JWT Bearer token authentication:
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the **MIT License**.
