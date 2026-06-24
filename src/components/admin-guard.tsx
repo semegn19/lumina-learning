@@ -14,7 +14,7 @@ export function AdminGuard({ children }: { children: ReactNode }) {
           className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent"
           aria-label="Loading"
         />
-      </div>
+      </div>  
     );
   }
 
