@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { ShieldAlert, ArrowLeft, GraduationCap } from "lucide-react";
 import { useAuth, isAdmin } from "@/lib/auth-context";
-import { Button } from "@/components/ui/button";    
+import { Button } from "@/components/ui/button";
 
 export function AdminGuard({ children }: { children: ReactNode }) {
   const { user, isLoading, isAuthenticated } = useAuth();
