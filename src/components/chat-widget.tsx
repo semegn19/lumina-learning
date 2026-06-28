@@ -6,7 +6,7 @@ type ChatMessage = { id: number; role: "bot" | "user"; text: string };
 
 const suggestions = [
   "How do I enroll in a course?",
-  "Where are my certificates?",
+  "Where are my certificates?", 
   "How do I apply for a job?",
 ];
 
