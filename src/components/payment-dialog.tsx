@@ -1,6 +1,6 @@
 import { ArrowRight, CheckCircle2, CreditCard, ShieldCheck, Ticket, Wallet, Zap } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";                        
+import { toast } from "sonner";                          
 
 import { Button } from "@/components/ui/button";
 import {
