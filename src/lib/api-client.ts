@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-//  Axios API Client  
+//  Axios API Client   
 //  - Base URL from env (falls back to localhost)
 //  - Attaches JWT access token to every request
 //  - Automatically refreshes expired tokens once
