@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────
 //  Backend API — TypeScript Type Definitions
-//  Base URL: http://localhost:8000                  
+//  Base URL: http://localhost:8000                   
 // ─────────────────────────────────────────────
 
 // ── Shared ──────────────────────────────────
