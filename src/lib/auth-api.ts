@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-//  Auth API Functions          
+//  Auth API Functions           
 //  Thin wrappers around the /api/auth/* endpoints.
 //  These are called from the auth context and login/register pages.
 // ─────────────────────────────────────────────
