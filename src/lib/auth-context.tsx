@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-//  Auth Context             
+//  Auth Context              
 //  Provides: user, role, isAuthenticated,
 //            login(), register(), logout()
 //  Stores JWT tokens in localStorage.
