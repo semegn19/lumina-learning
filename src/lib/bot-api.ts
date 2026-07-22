@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-//  Bots Chat API Functions      
+//  Bots Chat API Functions       
 // ─────────────────────────────────────────────
 
 import { api } from "./api-client";
