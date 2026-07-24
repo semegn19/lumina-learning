@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-//  Courses & Lessons API Functions          
+//  Courses & Lessons API Functions           
 // ─────────────────────────────────────────────
 
 import { api } from "./api-client";
