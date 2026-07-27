@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-//  Admin Dashboard & Audit Logs API Functions        
+//  Admin Dashboard & Audit Logs API Functions         
 // ─────────────────────────────────────────────
 
 import { api } from "./api-client";
