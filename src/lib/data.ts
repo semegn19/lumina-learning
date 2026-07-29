@@ -1,6 +1,6 @@
 export type Role = "Master Admin" | "Secondary Admin" | "Student";
 
-export type DirectoryUser = {       
+export type DirectoryUser = {        
   id: string;
   name: string;
   email: string;
