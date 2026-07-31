@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-//  Enrollments API Functions                    
+//  Enrollments API Functions                     
 // ─────────────────────────────────────────────
 
 import { api } from "./api-client";
