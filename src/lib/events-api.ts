@@ -1,4 +1,4 @@
-import { api } from "@/lib/api-client";      
+import { api } from "@/lib/api-client";     
 import type { EventCreatePayload, EventItem, EventRegistration, PaginatedResponse } from "@/lib/api-types";
 
 export interface GetEventsParams {
