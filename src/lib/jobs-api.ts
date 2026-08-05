@@ -1,5 +1,5 @@
 import { api } from "./api-client";          
-import type {
+import type { 
   JobItem,
   JobCreatePayload,
   JobApplication,
