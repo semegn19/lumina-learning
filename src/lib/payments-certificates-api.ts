@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────
-//  Payments, Donations & Certificates API Functions  
+//  Payments, Donations & Certificates API Functions    
 // ─────────────────────────────────────────────
 
 import { api } from "./api-client";
