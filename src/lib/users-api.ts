@@ -1,4 +1,4 @@
-import { api } from "./api-client";  
+import { api } from "./api-client";   
 import type { AuthUser, PaginatedResponse } from "./api-types";
 
 export interface GetUsersParams {
