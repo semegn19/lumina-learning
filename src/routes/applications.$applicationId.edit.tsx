@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound, useNavigate, useParams } from "@tanstack/react-router";
 import { ArrowLeft, CalendarDays, Info, MapPin } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";       
+import { toast } from "sonner";        
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
