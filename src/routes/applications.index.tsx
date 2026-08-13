@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Briefcase, CalendarDays, MapPin, MoreVertical, Pencil, Search, Trash2 } from "lucide-react";
-import { useState } from "react";  
+import { useState } from "react";
 import { toast } from "sonner";
 
 import {
