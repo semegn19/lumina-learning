@@ -1,0 +1,24 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+
+export const Route = createFileRoute("/dashboard")({
+  component: DashboardRedirect,
+});
+
+function DashboardRedirect() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const search = window.location.search;
+    void navigate({
+      to: `/${search}`,
+      replace: true,
+    } as any);
+  }, [navigate]);
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-canvas">
+      <span className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent" aria-label="Loading dashboard" />
+    </div>
+  );
+}
