@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import {            
+import {             
   ArrowUpRight,
   BadgeCheck,
   Briefcase,
