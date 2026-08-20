@@ -43,7 +43,7 @@ export async function createEvent(payload: EventCreatePayload): Promise<EventIte
   }
 
   const { data } = await api.post<EventItem>("/api/events/", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
+    timeout: 0,
   });
   return data;
 }
@@ -64,7 +64,7 @@ export async function updateEvent(
   if (payload.image instanceof File) formData.append("image", payload.image);
 
   const { data } = await api.patch<EventItem>(`/api/events/${id}/`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
+    timeout: 0,
   });
   return data;
 }
