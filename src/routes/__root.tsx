@@ -160,6 +160,7 @@ function AppShell() {
 
   const isPublic =
     pathname.startsWith("/auth") ||
+    pathname.startsWith("/reset-password") ||
     pathname === "/landing" ||
     pathname === "/verify-certificate" ||
     pathname.startsWith("/payment");
