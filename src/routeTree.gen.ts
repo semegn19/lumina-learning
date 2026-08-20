@@ -39,6 +39,7 @@ import { Route as ManageActivityRouteImport } from './routes/manage.activity'
 import { Route as ManageBotLogsRouteImport } from './routes/manage.bot-logs'
 import { Route as ManageFaqsRouteImport } from './routes/manage.faqs'
 import { Route as PaymentVerifyRouteImport } from './routes/payment.verify'
+import { Route as ResetPasswordIndexRouteImport } from './routes/reset-password.index'
 import { Route as SettingsOrganizationRouteImport } from './routes/settings.organization'
 import { Route as SettingsProfileRouteImport } from './routes/settings.profile'
 import { Route as UsersIndexRouteImport } from './routes/users.index'
@@ -50,6 +51,7 @@ import { Route as ManageDiscountsDiscountIdRouteImport } from './routes/manage.d
 import { Route as ManageDiscountsNewRouteImport } from './routes/manage.discounts.new'
 import { Route as ManageEventsIndexRouteImport } from './routes/manage.events.index'
 import { Route as ManageJobsIndexRouteImport } from './routes/manage.jobs.index'
+import { Route as ResetPasswordUidb64TokenRouteImport } from './routes/reset-password.$uidb64.$token'
 import { Route as UsersUserIdEditRouteImport } from './routes/users_.$userId.edit'
 import { Route as ManageCoursesCourseIdEditRouteImport } from './routes/manage.courses.$courseId.edit'
 import { Route as ManageCoursesCourseIdLessonsRouteImport } from './routes/manage.courses.$courseId.lessons'
@@ -209,6 +211,11 @@ const PaymentVerifyRoute = PaymentVerifyRouteImport.update({
   path: '/payment/verify',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordIndexRoute = ResetPasswordIndexRouteImport.update({
+  id: '/reset-password/',
+  path: '/reset-password/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsOrganizationRoute = SettingsOrganizationRouteImport.update({
   id: '/settings/organization',
   path: '/settings/organization',
@@ -266,6 +273,12 @@ const ManageJobsIndexRoute = ManageJobsIndexRouteImport.update({
   path: '/manage/jobs/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordUidb64TokenRoute =
+  ResetPasswordUidb64TokenRouteImport.update({
+    id: '/reset-password/$uidb64/$token',
+    path: '/reset-password/$uidb64/$token',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const UsersUserIdEditRoute = UsersUserIdEditRouteImport.update({
   id: '/users_/$userId/edit',
   path: '/users/$userId/edit',
@@ -346,10 +359,12 @@ export interface FileRoutesByFullPath {
   '/discounts/': typeof DiscountsIndexRoute
   '/events/': typeof EventsIndexRoute
   '/jobs/': typeof JobsIndexRoute
+  '/reset-password/': typeof ResetPasswordIndexRoute
   '/users/': typeof UsersIndexRoute
   '/applications/$applicationId/edit': typeof ApplicationsApplicationIdEditRoute
   '/manage/discounts/$discountId': typeof ManageDiscountsDiscountIdRoute
   '/manage/discounts/new': typeof ManageDiscountsNewRoute
+  '/reset-password/$uidb64/$token': typeof ResetPasswordUidb64TokenRoute
   '/users/$userId/edit': typeof UsersUserIdEditRoute
   '/manage/courses/': typeof ManageCoursesIndexRoute
   '/manage/discounts/': typeof ManageDiscountsIndexRoute
@@ -397,10 +412,12 @@ export interface FileRoutesByTo {
   '/discounts': typeof DiscountsIndexRoute
   '/events': typeof EventsIndexRoute
   '/jobs': typeof JobsIndexRoute
+  '/reset-password': typeof ResetPasswordIndexRoute
   '/users': typeof UsersIndexRoute
   '/applications/$applicationId/edit': typeof ApplicationsApplicationIdEditRoute
   '/manage/discounts/$discountId': typeof ManageDiscountsDiscountIdRoute
   '/manage/discounts/new': typeof ManageDiscountsNewRoute
+  '/reset-password/$uidb64/$token': typeof ResetPasswordUidb64TokenRoute
   '/users/$userId/edit': typeof UsersUserIdEditRoute
   '/manage/courses': typeof ManageCoursesIndexRoute
   '/manage/discounts': typeof ManageDiscountsIndexRoute
@@ -449,10 +466,12 @@ export interface FileRoutesById {
   '/discounts/': typeof DiscountsIndexRoute
   '/events/': typeof EventsIndexRoute
   '/jobs/': typeof JobsIndexRoute
+  '/reset-password/': typeof ResetPasswordIndexRoute
   '/users/': typeof UsersIndexRoute
   '/applications/$applicationId/edit': typeof ApplicationsApplicationIdEditRoute
   '/manage/discounts/$discountId': typeof ManageDiscountsDiscountIdRoute
   '/manage/discounts/new': typeof ManageDiscountsNewRoute
+  '/reset-password/$uidb64/$token': typeof ResetPasswordUidb64TokenRoute
   '/users_/$userId/edit': typeof UsersUserIdEditRoute
   '/manage/courses/': typeof ManageCoursesIndexRoute
   '/manage/discounts/': typeof ManageDiscountsIndexRoute
@@ -502,10 +521,12 @@ export interface FileRouteTypes {
     | '/discounts/'
     | '/events/'
     | '/jobs/'
+    | '/reset-password/'
     | '/users/'
     | '/applications/$applicationId/edit'
     | '/manage/discounts/$discountId'
     | '/manage/discounts/new'
+    | '/reset-password/$uidb64/$token'
     | '/users/$userId/edit'
     | '/manage/courses/'
     | '/manage/discounts/'
@@ -553,10 +574,12 @@ export interface FileRouteTypes {
     | '/discounts'
     | '/events'
     | '/jobs'
+    | '/reset-password'
     | '/users'
     | '/applications/$applicationId/edit'
     | '/manage/discounts/$discountId'
     | '/manage/discounts/new'
+    | '/reset-password/$uidb64/$token'
     | '/users/$userId/edit'
     | '/manage/courses'
     | '/manage/discounts'
@@ -604,10 +627,12 @@ export interface FileRouteTypes {
     | '/discounts/'
     | '/events/'
     | '/jobs/'
+    | '/reset-password/'
     | '/users/'
     | '/applications/$applicationId/edit'
     | '/manage/discounts/$discountId'
     | '/manage/discounts/new'
+    | '/reset-password/$uidb64/$token'
     | '/users_/$userId/edit'
     | '/manage/courses/'
     | '/manage/discounts/'
@@ -656,10 +681,12 @@ export interface RootRouteChildren {
   DiscountsIndexRoute: typeof DiscountsIndexRoute
   EventsIndexRoute: typeof EventsIndexRoute
   JobsIndexRoute: typeof JobsIndexRoute
+  ResetPasswordIndexRoute: typeof ResetPasswordIndexRoute
   UsersIndexRoute: typeof UsersIndexRoute
   ApplicationsApplicationIdEditRoute: typeof ApplicationsApplicationIdEditRoute
   ManageDiscountsDiscountIdRoute: typeof ManageDiscountsDiscountIdRoute
   ManageDiscountsNewRoute: typeof ManageDiscountsNewRoute
+  ResetPasswordUidb64TokenRoute: typeof ResetPasswordUidb64TokenRoute
   UsersUserIdEditRoute: typeof UsersUserIdEditRoute
   ManageCoursesIndexRoute: typeof ManageCoursesIndexRoute
   ManageDiscountsIndexRoute: typeof ManageDiscountsIndexRoute
@@ -886,6 +913,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PaymentVerifyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password/': {
+      id: '/reset-password/'
+      path: '/reset-password'
+      fullPath: '/reset-password/'
+      preLoaderRoute: typeof ResetPasswordIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings/organization': {
       id: '/settings/organization'
       path: '/settings/organization'
@@ -961,6 +995,13 @@ declare module '@tanstack/react-router' {
       path: '/manage/jobs'
       fullPath: '/manage/jobs/'
       preLoaderRoute: typeof ManageJobsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password/$uidb64/$token': {
+      id: '/reset-password/$uidb64/$token'
+      path: '/reset-password/$uidb64/$token'
+      fullPath: '/reset-password/$uidb64/$token'
+      preLoaderRoute: typeof ResetPasswordUidb64TokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/users_/$userId/edit': {
@@ -1056,10 +1097,12 @@ const rootRouteChildren: RootRouteChildren = {
   DiscountsIndexRoute: DiscountsIndexRoute,
   EventsIndexRoute: EventsIndexRoute,
   JobsIndexRoute: JobsIndexRoute,
+  ResetPasswordIndexRoute: ResetPasswordIndexRoute,
   UsersIndexRoute: UsersIndexRoute,
   ApplicationsApplicationIdEditRoute: ApplicationsApplicationIdEditRoute,
   ManageDiscountsDiscountIdRoute: ManageDiscountsDiscountIdRoute,
   ManageDiscountsNewRoute: ManageDiscountsNewRoute,
+  ResetPasswordUidb64TokenRoute: ResetPasswordUidb64TokenRoute,
   UsersUserIdEditRoute: UsersUserIdEditRoute,
   ManageCoursesIndexRoute: ManageCoursesIndexRoute,
   ManageDiscountsIndexRoute: ManageDiscountsIndexRoute,
