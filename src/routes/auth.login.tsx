@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-context";
 import { requestPasswordReset } from "@/lib/auth-api";
 import { getApiErrorMessage } from "@/lib/api-client";
+import { isColdStartOrNetworkError, waitForServerWakeup } from "@/lib/server-health";
+import { ServerWarmingModal } from "@/components/server-warming-modal";
 
 export const Route = createFileRoute("/auth/login")({
   head: () => ({
@@ -33,22 +35,54 @@ function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [resetPending, setResetPending] = useState(false);
+  const [isWarming, setIsWarming] = useState(false);
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const attemptLogin = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!email.includes("@") || password.length < 6) {
       setError("Enter a valid email and a password of at least 6 characters.");
       return;
     }
     setError(null);
     setPending(true);
+
+    // If request takes longer than 2.5 seconds, pop the warming modal to keep user informed
+    const warmingTimer = setTimeout(() => {
+      setIsWarming(true);
+    }, 2500);
+
     try {
       await login(email, password);
+      clearTimeout(warmingTimer);
+      setIsWarming(false);
       toast.success("Welcome back!");
       // Hard navigate so the root shell re-renders with the new auth state
       window.location.href = "/";
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : getApiErrorMessage(err, "Invalid email or password."));
+      clearTimeout(warmingTimer);
+      if (isColdStartOrNetworkError(err)) {
+        setIsWarming(true);
+        // Server might be in the middle of spinning up; wait for it and retry
+        const awake = await waitForServerWakeup({ maxWaitSeconds: 70 });
+        if (awake) {
+          try {
+            await login(email, password);
+            setIsWarming(false);
+            toast.success("Connected! Welcome back!");
+            window.location.href = "/";
+            return;
+          } catch (retryErr) {
+            setIsWarming(false);
+            setError(getApiErrorMessage(retryErr, "Invalid email or password."));
+          }
+        } else {
+          setIsWarming(false);
+          setError("Server is taking longer than usual to wake up. Please refresh or try again in a few seconds.");
+        }
+      } else {
+        setIsWarming(false);
+        setError(err instanceof Error ? err.message : getApiErrorMessage(err, "Invalid email or password."));
+      }
     } finally {
       setPending(false);
     }
@@ -81,7 +115,7 @@ function LoginPage() {
           <p className="mt-1.5 text-base text-muted-foreground">Sign in to continue your learning journey.</p>
         </div>
 
-        <form onSubmit={submit} className="surface-card mt-8 space-y-5 p-8">
+        <form onSubmit={attemptLogin} className="surface-card mt-8 space-y-5 p-8">
           <div className="space-y-2">
             <Label htmlFor="email" className="field-label">
               Email Address
@@ -143,7 +177,7 @@ function LoginPage() {
           </div>
 
           <Button type="submit" disabled={pending} className="h-12 w-full rounded-xl">
-            {pending ? "Signing in…" : "Sign In"}
+            {pending ? "Connecting…" : "Sign In"}
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">
@@ -153,6 +187,14 @@ function LoginPage() {
             </Link>
           </p>
         </form>
+
+        <ServerWarmingModal
+          open={isWarming}
+          onOpenChange={setIsWarming}
+          title="Connecting to Server…"
+          description="Our cloud backend is currently waking up from sleep mode (~30–45s). As soon as the server is ready, we'll sign you in automatically!"
+          onRetry={() => void attemptLogin()}
+        />
       </div>
     </div>
   );
