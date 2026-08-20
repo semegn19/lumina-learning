@@ -199,13 +199,27 @@ export function getApiErrorMessage(error: unknown, fallback = "Something went wr
     return "Server is currently waking up (Gateway Starting). Please wait a moment and retry.";
   }
 
-  const data = error.response?.data as Record<string, unknown> | undefined;
+  const data = error.response?.data;
   if (!data) return fallback;
 
-  if (typeof data["detail"] === "string") return data["detail"] as string;
+  // If the server returned an HTML page (like a 404/500/SPA fallback), prevent Object.entries character splitting
+  if (typeof data === "string") {
+    if (data.trim().startsWith("<") || data.includes("<!DOCTYPE") || data.includes("<html")) {
+      return "The backend API could not be reached (received HTML instead of JSON). Please verify VITE_API_URL in Vercel settings and redeploy.";
+    }
+    return data;
+  }
+
+  if (typeof data !== "object" || data === null) {
+    return fallback;
+  }
+
+  const record = data as Record<string, unknown>;
+
+  if (typeof record["detail"] === "string") return record["detail"] as string;
 
   // Field-level validation errors: join the first error from each field
-  const fieldErrors = Object.entries(data)
+  const fieldErrors = Object.entries(record)
     .filter(([, v]) => v)
     .map(([field, msgs]) => {
       const message = Array.isArray(msgs) ? msgs[0] : msgs;

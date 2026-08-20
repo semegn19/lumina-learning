@@ -29,7 +29,14 @@ export function isColdStartOrNetworkError(error: unknown): boolean {
 
   const status = error.response.status;
   // 502 Bad Gateway, 503 Service Unavailable, 504 Gateway Timeout, 500 during boot
-  return status === 502 || status === 503 || status === 504 || status === 500;
+  if (status === 502 || status === 503 || status === 504 || status === 500) return true;
+
+  // If we received an HTML error page when expecting JSON from API
+  if (typeof error.response.data === "string" && error.response.data.trim().startsWith("<")) {
+    return true;
+  }
+
+  return false;
 }
 
 /**
