@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-context";
 import { getApiErrorMessage } from "@/lib/api-client";
+import { isColdStartOrNetworkError, waitForServerWakeup } from "@/lib/server-health";
+import { ServerWarmingModal } from "@/components/server-warming-modal";
 
 export const Route = createFileRoute("/auth/register")({
   head: () => ({
@@ -40,12 +42,13 @@ function RegisterPage() {
   const [show, setShow] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const [isWarming, setIsWarming] = useState(false);
 
   const set = (key: keyof Fields) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setValues((v) => ({ ...v, [key]: e.target.value }));
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const attemptRegister = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!values.username.trim() || !values.first_name.trim() || !values.last_name.trim()) {
       setError("Username, first name and last name are required.");
       return;
@@ -64,20 +67,51 @@ function RegisterPage() {
     }
     setError(null);
     setPending(true);
+
+    const warmingTimer = setTimeout(() => {
+      setIsWarming(true);
+    }, 2500);
+
+    const payload = {
+      username: values.username,
+      email: values.email,
+      first_name: values.first_name,
+      last_name: values.last_name,
+      password: values.password,
+      password2: values.confirm,
+    };
+
     try {
-      await register({
-        username: values.username,
-        email: values.email,
-        first_name: values.first_name,
-        last_name: values.last_name,
-        password: values.password,
-        password2: values.confirm,
-      });
+      await register(payload);
+      clearTimeout(warmingTimer);
+      setIsWarming(false);
       toast.success("Account created — welcome!");
       // Hard-navigate so the root shell picks up the new auth state
       window.location.href = "/";
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : getApiErrorMessage(err, "Registration failed. Please try again."));
+      clearTimeout(warmingTimer);
+      if (isColdStartOrNetworkError(err)) {
+        setIsWarming(true);
+        const awake = await waitForServerWakeup({ maxWaitSeconds: 70 });
+        if (awake) {
+          try {
+            await register(payload);
+            setIsWarming(false);
+            toast.success("Connected! Account created — welcome!");
+            window.location.href = "/";
+            return;
+          } catch (retryErr) {
+            setIsWarming(false);
+            setError(getApiErrorMessage(retryErr, "Registration failed. Please try again."));
+          }
+        } else {
+          setIsWarming(false);
+          setError("Server is taking longer than usual to wake up. Please refresh or try again in a few seconds.");
+        }
+      } else {
+        setIsWarming(false);
+        setError(err instanceof Error ? err.message : getApiErrorMessage(err, "Registration failed. Please try again."));
+      }
     } finally {
       setPending(false);
     }
@@ -176,7 +210,7 @@ function RegisterPage() {
           {error ? <p className="text-sm font-medium text-destructive">{error}</p> : null}
 
           <Button type="submit" disabled={pending} className="h-12 w-full rounded-xl">
-            {pending ? "Creating account…" : "Create Account"}
+            {pending ? "Connecting…" : "Create Account"}
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">
@@ -186,6 +220,14 @@ function RegisterPage() {
             </Link>
           </p>
         </form>
+
+        <ServerWarmingModal
+          open={isWarming}
+          onOpenChange={setIsWarming}
+          title="Connecting to Server…"
+          description="Our cloud backend is currently waking up from sleep mode (~30–45s). As soon as the server is ready, we'll finish setting up your account!"
+          onRetry={() => void attemptRegister()}
+        />
       </div>
     </div>
   );
