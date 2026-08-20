@@ -85,7 +85,13 @@ export function formatJobSalary(salary?: number | string | null): string | null 
   return cleaned;
 }
 
-const BACKEND_BASE_URL = (import.meta.env["VITE_API_URL"] ?? "http://127.0.0.1:8000").replace(/\/+$/, "");
+const BACKEND_BASE_URL = (
+  typeof import.meta.env.VITE_API_URL === "string" && import.meta.env.VITE_API_URL.trim() !== ""
+    ? import.meta.env.VITE_API_URL
+    : import.meta.env.DEV
+      ? "http://127.0.0.1:8000"
+      : ""
+).replace(/\/+$/, "");
 
 /**
  * Format full URL for backend media files (images, videos, PDFs, avatars, etc.)
