@@ -18,6 +18,7 @@ const BASE_URL = import.meta.env["VITE_API_URL"] ?? "http://localhost:8000";
 export const api = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
+  timeout: 60000,
   withCredentials: false,
 });
 
@@ -162,10 +163,30 @@ export function decodeJwtPayload<T = Record<string, unknown>>(token: string): T 
 // ── Convenience error extractor ───────────────
 /**
  * Pull a human-readable message from a DRF error response.
- * Tries `detail`, then field-level errors, then falls back to a generic message.
+ * Tries `detail`, then field-level errors, checks for cold-start/network errors,
+ * then falls back to a generic message.
  */
 export function getApiErrorMessage(error: unknown, fallback = "Something went wrong."): string {
-  if (!axios.isAxiosError(error)) return fallback;
+  if (!axios.isAxiosError(error)) {
+    if (error instanceof Error && error.message) return error.message;
+    return fallback;
+  }
+
+  // Handle timeout or cold start abort
+  if (error.code === "ECONNABORTED" || error.message?.toLowerCase().includes("timeout")) {
+    return "The server is taking time to wake up. Please wait a moment and try again.";
+  }
+
+  // Handle network failure / offline / sleep mode
+  if (!error.response || error.code === "ERR_NETWORK") {
+    return "Cannot reach the server. It may be waking up from sleep mode (~30s). Please try again shortly.";
+  }
+
+  const status = error.response.status;
+  if (status === 502 || status === 503 || status === 504) {
+    return "Server is currently waking up (Gateway Starting). Please wait a moment and retry.";
+  }
+
   const data = error.response?.data as Record<string, unknown> | undefined;
   if (!data) return fallback;
 
