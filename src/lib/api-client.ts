@@ -28,12 +28,13 @@ const AUTH_BYPASS_PATHS = [
   "/api/register/",
   "/api/token/refresh/",
   "/api/password-reset/",
+  "/api/password-reset-confirm/",
   "/api/logout/",
 ];
 
 function isAuthBypassUrl(url?: string): boolean {
   if (!url) return false;
-  return AUTH_BYPASS_PATHS.some((path) => url.endsWith(path));
+  return AUTH_BYPASS_PATHS.some((path) => url.includes(path) || url.endsWith(path));
 }
 
 // ── Request interceptor — attach token ───────
