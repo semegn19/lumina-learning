@@ -68,7 +68,7 @@ export async function updateUser(
   payload: Partial<AuthUser> | FormData,
 ): Promise<AuthUser> {
   const isFormData = payload instanceof FormData;
-  const res = await api.patch(`/api/users/${id}/`, payload, isFormData ? { headers: { "Content-Type": "multipart/form-data" } } : undefined);
+  const res = await api.patch(`/api/users/${id}/`, payload, isFormData ? { timeout: 0 } : undefined);
   return res.data;
 }
 
