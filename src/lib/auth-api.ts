@@ -61,6 +61,19 @@ export async function requestPasswordReset(email: string): Promise<void> {
   await api.post("/api/password-reset/", { email });
 }
 
+/** POST /api/password-reset-confirm/{uidb64}/{token}/ — confirm password reset and set new password */
+export async function confirmPasswordReset(
+  uidb64: string,
+  token: string,
+  password: string
+): Promise<{ message?: string; detail?: string }> {
+  const { data } = await api.post<{ message?: string; detail?: string }>(
+    `/api/password-reset-confirm/${uidb64}/${token}/`,
+    { password }
+  );
+  return data;
+}
+
 /** PATCH /api/users/{id}/ — update current user's profile */
 export async function updateUser(userId: number, payload: UserUpdatePayload): Promise<AuthUser> {
   // Profile picture is a file — use multipart/form-data when present
