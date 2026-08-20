@@ -128,7 +128,7 @@ function RegisterPage() {
           <p className="mt-1.5 text-base text-muted-foreground">Join Lumina Learning and start learning today.</p>
         </div>
 
-        <form onSubmit={submit} className="surface-card mt-8 space-y-5 p-8">
+        <form onSubmit={attemptRegister} className="surface-card mt-8 space-y-5 p-8">
           <div className="grid gap-5 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="first_name" className="field-label">

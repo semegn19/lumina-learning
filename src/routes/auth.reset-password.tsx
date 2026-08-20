@@ -10,15 +10,19 @@ import { confirmPasswordReset, requestPasswordReset } from "@/lib/auth-api";
 import { getApiErrorMessage } from "@/lib/api-client";
 
 interface ResetPasswordSearch {
-  uidb64?: string;
-  token?: string;
+  uidb64?: string | undefined;
+  token?: string | undefined;
 }
 
 export const Route = createFileRoute("/auth/reset-password")({
-  validateSearch: (search: Record<string, unknown>): ResetPasswordSearch => ({
-    uidb64: typeof search.uidb64 === "string" ? search.uidb64 : undefined,
-    token: typeof search.token === "string" ? search.token : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): ResetPasswordSearch => {
+    const rawUid = search["uidb64"];
+    const rawToken = search["token"];
+    return {
+      uidb64: typeof rawUid === "string" ? rawUid : undefined,
+      token: typeof rawToken === "string" ? rawToken : undefined,
+    };
+  },
   head: () => ({
     meta: [
       { title: "Reset Password | Lumina Learning" },
