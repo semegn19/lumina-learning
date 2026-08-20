@@ -106,19 +106,33 @@ function EditLessons() {
     },
   });
 
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+
   // New lesson create mutation
   const createMut = useMutation({
     mutationFn: () => {
       if (!newVideo) {
         throw new Error("A video file is required when adding a lesson.");
       }
-      return createLesson(courseId, {
-        title: newTitle,
-        description: newDesc,
-        order: lessons.length + 1,
-        video_file: newVideo,
-        pdf_resource: newPdf,
-      });
+      setUploadProgress(0);
+      return createLesson(
+        courseId,
+        {
+          title: newTitle,
+          description: newDesc,
+          order: lessons.length + 1,
+          video_file: newVideo,
+          pdf_resource: newPdf,
+        },
+        {
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const pct = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              setUploadProgress(pct);
+            }
+          },
+        }
+      );
     },
     onSuccess: () => {
       toast.success("New lesson created!");
@@ -126,10 +140,12 @@ function EditLessons() {
       setNewDesc("");
       setNewVideo(null);
       setNewPdf(null);
+      setUploadProgress(null);
       setShowAddForm(false);
       void queryClient.invalidateQueries({ queryKey: ["course-lessons", courseId] });
     },
     onError: (err) => {
+      setUploadProgress(null);
       toast.error(`Failed to create lesson: ${getApiErrorMessage(err)}`);
     },
   });
@@ -374,7 +390,11 @@ function EditLessons() {
                         onClick={() => createMut.mutate()}
                         className="rounded-lg"
                       >
-                        {createMut.isPending ? "Creating…" : "Save Lesson"}
+                        {createMut.isPending
+                          ? uploadProgress !== null
+                            ? `Uploading ${uploadProgress}%…`
+                            : "Creating…"
+                          : "Save Lesson"}
                       </Button>
                       <Button
                         type="button"
