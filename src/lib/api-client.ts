@@ -184,9 +184,9 @@ export function getApiErrorMessage(error: unknown, fallback = "Something went wr
     return fallback;
   }
 
-  // Handle timeout or cold start abort
+  // Handle timeout abort
   if (error.code === "ECONNABORTED" || error.message?.toLowerCase().includes("timeout")) {
-    return "The server is taking time to wake up. Please wait a moment and try again.";
+    return "The request timed out. If you are uploading a large video or file, please verify your connection speed or retry with a smaller file.";
   }
 
   // Handle network failure / offline / sleep mode
