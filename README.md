@@ -7,7 +7,7 @@
 [![Vite](https://img.shields.io/badge/Vite-8.2-646cff.svg?logo=vite)](https://vitejs.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-**Lumina Learning** (Studycraft Kit) is a full-featured, enterprise-grade frontend web application for modern online education, interactive course streaming, career placements, event hosting, and credential verification. Built with **React 19**, **TanStack Router & Start**, **TypeScript**, and **Tailwind CSS v4**, it provides an intuitive student learning experience paired with a robust administrative dashboard for instructors and platform operators.
+**Lumina Learning** is a full-featured, enterprise-grade frontend web application for modern online education, interactive course streaming, career placements, event hosting, and credential verification. Built with **React 19**, **TanStack Router & Start**, **TypeScript**, and **Tailwind CSS v4**, it provides an intuitive student learning experience paired with a robust administrative dashboard for instructors and platform operators.
 
 ---
 
@@ -129,7 +129,7 @@ lumina-learning/
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/your-username/studycraft-kit.git
+git clone https://github.com/semegn19/studycraft-kit.git
 cd studycraft-kit
 ```
 
