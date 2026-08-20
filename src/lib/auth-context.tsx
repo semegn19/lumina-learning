@@ -18,8 +18,9 @@ import {
   type ReactNode,
 } from "react";
 import { fetchUserFromToken, loginRequest, logoutRequest, registerRequest } from "./auth-api";
-import { getApiErrorMessage } from "./api-client";
+import { getApiErrorMessage, decodeJwtPayload } from "./api-client";
 import { tokenStorage } from "./token-storage";
+import { isColdStartOrNetworkError } from "./server-health";
 import type { AuthUser, RegisterPayload, UserRole } from "./api-types";
 
 // ── Helpers ─────────────────────────────────
@@ -89,9 +90,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     fetchUserFromToken(token)
       .then((me) => setUser(me))
-      .catch(() => {
-        // Token invalid / expired beyond refresh — clear it quietly
-        tokenStorage.clear();
+      .catch((err: unknown) => {
+        if (isColdStartOrNetworkError(err)) {
+          // Do not clear the token on network / cold-start error.
+          // Construct a minimal user from the JWT payload so the session is preserved.
+          const payload = decodeJwtPayload<{ user_id?: number; email?: string; role?: UserRole }>(token);
+          if (payload?.user_id) {
+            setUser({
+              id: payload.user_id,
+              username: payload.email?.split("@")[0] ?? "user",
+              email: payload.email ?? "",
+              first_name: "",
+              last_name: "",
+              role: payload.role ?? "ST",
+              is_active: true,
+            });
+          }
+        } else {
+          // Token is genuinely invalid / expired beyond refresh
+          tokenStorage.clear();
+        }
       })
       .finally(() => setIsLoading(false));
   }, []);
