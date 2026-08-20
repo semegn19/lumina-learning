@@ -33,8 +33,13 @@ export async function getCourseById(id: string | number): Promise<Course> {
   return data;
 }
 
+import type { AxiosProgressEvent } from "axios";
+
 /** POST /api/courses/ — Create course (Admin only) */
-export async function createCourse(payload: CourseCreatePayload): Promise<Course> {
+export async function createCourse(
+  payload: CourseCreatePayload,
+  options?: { onUploadProgress?: (progressEvent: AxiosProgressEvent) => void }
+): Promise<Course> {
   const formData = new FormData();
   formData.append("title", payload.title);
   formData.append("description", payload.description);
@@ -49,7 +54,8 @@ export async function createCourse(payload: CourseCreatePayload): Promise<Course
   }
 
   const { data } = await api.post<Course>("/api/courses/", formData, {
-    headers: { "Content-Type": "multipart/form-data" },
+    timeout: 0,
+    ...(options?.onUploadProgress ? { onUploadProgress: options.onUploadProgress } : {}),
   });
   return data;
 }
@@ -57,7 +63,8 @@ export async function createCourse(payload: CourseCreatePayload): Promise<Course
 /** PUT/PATCH /api/courses/{id}/ — Update course (Admin only) */
 export async function updateCourse(
   id: string | number,
-  payload: Partial<CourseCreatePayload>
+  payload: Partial<CourseCreatePayload>,
+  options?: { onUploadProgress?: (progressEvent: AxiosProgressEvent) => void }
 ): Promise<Course> {
   const formData = new FormData();
   if (payload.title !== undefined) formData.append("title", payload.title);
@@ -71,7 +78,8 @@ export async function updateCourse(
   }
 
   const { data } = await api.patch<Course>(`/api/courses/${id}/`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
+    timeout: 0,
+    ...(options?.onUploadProgress ? { onUploadProgress: options.onUploadProgress } : {}),
   });
   return data;
 }
@@ -107,7 +115,11 @@ export async function getLessonById(courseId: string | number, lessonId: string 
 }
 
 /** POST /api/courses/{courseId}/lessons/ (Admin only, accepts FormData) */
-export async function createLesson(courseId: string | number, payload: LessonCreatePayload): Promise<Lesson> {
+export async function createLesson(
+  courseId: string | number,
+  payload: LessonCreatePayload,
+  options?: { onUploadProgress?: (progressEvent: AxiosProgressEvent) => void }
+): Promise<Lesson> {
   const form = new FormData();
   form.append("title", payload.title);
   form.append("description", payload.description);
@@ -116,7 +128,8 @@ export async function createLesson(courseId: string | number, payload: LessonCre
   if (payload.pdf_resource) form.append("pdf_resource", payload.pdf_resource);
 
   const { data } = await api.post<Lesson>(`/api/courses/${courseId}/lessons/`, form, {
-    headers: { "Content-Type": "multipart/form-data" },
+    timeout: 0,
+    ...(options?.onUploadProgress ? { onUploadProgress: options.onUploadProgress } : {}),
   });
   return data;
 }
@@ -125,7 +138,8 @@ export async function createLesson(courseId: string | number, payload: LessonCre
 export async function updateLesson(
   courseId: string | number,
   lessonId: string | number,
-  payload: Partial<LessonCreatePayload>
+  payload: Partial<LessonCreatePayload>,
+  options?: { onUploadProgress?: (progressEvent: AxiosProgressEvent) => void }
 ): Promise<Lesson> {
   const form = new FormData();
   if (payload.title) form.append("title", payload.title);
@@ -135,7 +149,8 @@ export async function updateLesson(
   if (payload.pdf_resource instanceof File) form.append("pdf_resource", payload.pdf_resource);
 
   const { data } = await api.patch<Lesson>(`/api/courses/${courseId}/lessons/${lessonId}/`, form, {
-    headers: { "Content-Type": "multipart/form-data" },
+    timeout: 0,
+    ...(options?.onUploadProgress ? { onUploadProgress: options.onUploadProgress } : {}),
   });
   return data;
 }
