@@ -11,9 +11,21 @@ import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios";
 import { tokenStorage } from "./token-storage";
 
 // ── Base URL ────────────────────────────────
-// Set VITE_API_URL in your .env file to point at the real server.
-// Default: Django dev server on port 8000.
-const BASE_URL = import.meta.env["VITE_API_URL"];
+// Set VITE_API_URL in your environment / Vercel settings.
+// Dot notation import.meta.env.VITE_API_URL allows Vite's static compiler to replace it.
+const getBaseUrl = (): string => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (typeof envUrl === "string" && envUrl.trim().length > 0) {
+    return envUrl.replace(/\/+$/, "");
+  }
+  // Local development fallback
+  if (import.meta.env.DEV) {
+    return "http://localhost:8000";
+  }
+  return "";
+};
+
+const BASE_URL = getBaseUrl();
 
 export const api = axios.create({
   baseURL: BASE_URL,
