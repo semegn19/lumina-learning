@@ -90,7 +90,7 @@ export async function updateUser(userId: number, payload: UserUpdatePayload): Pr
       }
     });
     const { data } = await api.patch<AuthUser>(`/api/users/${userId}/`, form, {
-      headers: { "Content-Type": "multipart/form-data" },
+      timeout: 0,
     });
     return data;
   }
