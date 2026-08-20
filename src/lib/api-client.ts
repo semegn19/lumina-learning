@@ -13,7 +13,7 @@ import { tokenStorage } from "./token-storage";
 // ── Base URL ────────────────────────────────
 // Set VITE_API_URL in your .env file to point at the real server.
 // Default: Django dev server on port 8000.
-const BASE_URL = import.meta.env["VITE_API_URL"] ?? "http://localhost:8000";
+const BASE_URL = import.meta.env["VITE_API_URL"];
 
 export const api = axios.create({
   baseURL: BASE_URL,
