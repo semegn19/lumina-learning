@@ -13,13 +13,7 @@ export async function updateOrganizationSettings(
   const response = await api.put<OrganizationSettings>(
     "/api/settings/",
     payload,
-    isFormData
-      ? {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      : undefined,
+    isFormData ? { timeout: 0 } : undefined,
   );
   return response.data;
 }
