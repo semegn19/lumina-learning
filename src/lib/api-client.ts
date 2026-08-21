@@ -29,7 +29,6 @@ const BASE_URL = getBaseUrl();
 
 export const api = axios.create({
   baseURL: BASE_URL,
-  headers: { "Content-Type": "application/json" },
   timeout: 60000,
   withCredentials: false,
 });
@@ -54,12 +53,20 @@ function isAuthBypassUrl(url?: string): boolean {
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = tokenStorage.getAccess();
   if (token && config.headers) {
-    config.headers["Authorization"] = `Bearer ${token}`;
+    if (typeof config.headers.set === "function") {
+      config.headers.set("Authorization", `Bearer ${token}`);
+    } else {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
   }
 
-  // If data is FormData, remove hardcoded Content-Type so browser/Axios attaches boundary
+  // If payload is FormData, ensure Content-Type is deleted so browser attaches multipart boundary
   if (config.data instanceof FormData && config.headers) {
-    delete config.headers["Content-Type"];
+    if (typeof config.headers.delete === "function") {
+      config.headers.delete("Content-Type");
+    } else {
+      delete config.headers["Content-Type"];
+    }
   }
 
   return config;
@@ -190,28 +197,49 @@ export function getApiErrorMessage(error: unknown, fallback = "Something went wr
     return fallback;
   }
 
+  // Log full error details in browser console for transparency
+  if (typeof window !== "undefined") {
+    console.error("[API Error Details]:", {
+      message: error.message,
+      code: error.code,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+      config: {
+        url: error.config?.url,
+        method: error.config?.method,
+        baseURL: error.config?.baseURL,
+      },
+    });
+  }
+
   // Handle timeout abort
   if (error.code === "ECONNABORTED" || error.message?.toLowerCase().includes("timeout")) {
     return "The request timed out. If you are uploading a large video or file, please verify your connection speed or retry with a smaller file.";
   }
 
-  // Handle network failure / offline / sleep mode
+  // Handle 413 Payload Too Large
+  if (error.response?.status === 413) {
+    return "The uploaded file is too large for the server. Please try a smaller video/PDF or increase the server body size limit.";
+  }
+
+  // Handle network failure / offline / CORS / connection drop
   if (!error.response || error.code === "ERR_NETWORK") {
-    return "Cannot reach the server. It may be waking up from sleep mode (~30s). Please try again shortly.";
+    return error.message || "Network Error: Could not connect to the backend server. Please check your connection or CORS settings.";
   }
 
   const status = error.response.status;
   if (status === 502 || status === 503 || status === 504) {
-    return "Server is currently waking up (Gateway Starting). Please wait a moment and retry.";
+    return `Server is temporarily unavailable (HTTP ${status}). Please wait a moment and retry.`;
   }
 
   const data = error.response?.data;
-  if (!data) return fallback;
+  if (!data) return error.message || fallback;
 
   // If the server returned an HTML page (like a 404/500/SPA fallback), prevent Object.entries character splitting
   if (typeof data === "string") {
     if (data.trim().startsWith("<") || data.includes("<!DOCTYPE") || data.includes("<html")) {
-      return "The backend API could not be reached (received HTML instead of JSON). Please verify VITE_API_URL in Vercel settings and redeploy.";
+      return `Server returned an HTML error page (HTTP ${status}). Please verify that your backend URL (${error.config?.baseURL || "BASE_URL"}) is live.`;
     }
     return data;
   }
