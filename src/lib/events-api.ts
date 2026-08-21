@@ -25,8 +25,13 @@ export async function getEventById(id: string | number): Promise<EventItem> {
   return data;
 }
 
+import type { AxiosProgressEvent } from "axios";
+
 /** POST /api/events/ — Create a new event (Admin only) */
-export async function createEvent(payload: EventCreatePayload): Promise<EventItem> {
+export async function createEvent(
+  payload: EventCreatePayload,
+  options?: { onUploadProgress?: (progressEvent: AxiosProgressEvent) => void }
+): Promise<EventItem> {
   const formData = new FormData();
   formData.append("title", payload.title);
   formData.append("description", payload.description);
@@ -38,12 +43,16 @@ export async function createEvent(payload: EventCreatePayload): Promise<EventIte
     formData.append("featured_guest", payload.featured_guest);
   }
 
-  if (payload.image) {
-    formData.append("image", payload.image);
+  const file = payload.image || payload.thumbnail || payload.cover_image;
+  if (file instanceof File) {
+    formData.append("image", file);
+    formData.append("thumbnail", file);
+    formData.append("cover_image", file);
   }
 
   const { data } = await api.post<EventItem>("/api/events/", formData, {
     timeout: 0,
+    ...(options?.onUploadProgress ? { onUploadProgress: options.onUploadProgress } : {}),
   });
   return data;
 }
@@ -51,7 +60,8 @@ export async function createEvent(payload: EventCreatePayload): Promise<EventIte
 /** PUT /api/events/{id}/ or PATCH /api/events/{id}/ — Update an event (Admin only) */
 export async function updateEvent(
   id: string | number,
-  payload: Partial<EventCreatePayload>
+  payload: Partial<EventCreatePayload>,
+  options?: { onUploadProgress?: (progressEvent: AxiosProgressEvent) => void }
 ): Promise<EventItem> {
   const formData = new FormData();
   if (payload.title !== undefined) formData.append("title", payload.title);
@@ -61,10 +71,17 @@ export async function updateEvent(
   if (payload.price !== undefined) formData.append("price", String(payload.price));
   if (payload.currency !== undefined) formData.append("currency", payload.currency);
   if (payload.featured_guest !== undefined) formData.append("featured_guest", payload.featured_guest);
-  if (payload.image instanceof File) formData.append("image", payload.image);
+
+  const file = payload.image || payload.thumbnail || payload.cover_image;
+  if (file instanceof File) {
+    formData.append("image", file);
+    formData.append("thumbnail", file);
+    formData.append("cover_image", file);
+  }
 
   const { data } = await api.patch<EventItem>(`/api/events/${id}/`, formData, {
     timeout: 0,
+    ...(options?.onUploadProgress ? { onUploadProgress: options.onUploadProgress } : {}),
   });
   return data;
 }

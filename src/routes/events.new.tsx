@@ -68,6 +68,7 @@ function CreateEvent() {
         featured_guest: featuredGuest.trim() || undefined,
         price: price.trim() !== "" ? parseFloat(price) : 0,
         currency,
+        picture: imageFile,
         image: imageFile,
       });
     },

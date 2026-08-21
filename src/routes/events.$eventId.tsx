@@ -135,7 +135,7 @@ function EventDetails() {
 
         <div className="mt-6 overflow-hidden rounded-3xl">
           <img
-            src={getMediaUrl(event.image) || eventCover}
+            src={getMediaUrl(event.image || event.thumbnail || event.cover_image) || eventCover}
             alt={`Cover for ${event.title}`}
             loading="lazy"
             width={1200}

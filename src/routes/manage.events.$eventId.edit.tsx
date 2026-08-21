@@ -71,8 +71,9 @@ function EditEvent() {
       setFeaturedGuest(event.featured_guest || "");
       setPrice(String(event.price ?? "0.00"));
       setCurrency(event.currency || "USD");
-      if (event.image) {
-        setImagePreview(event.image);
+      const existingImg = event.image || event.thumbnail || event.cover_image;
+      if (existingImg) {
+        setImagePreview(existingImg);
       }
     }
   }, [event]);
@@ -89,6 +90,7 @@ function EditEvent() {
         featured_guest: featuredGuest,
         price: parseFloat(price) || 0,
         currency,
+        picture: imageFile || undefined,
         image: imageFile || undefined,
       });
     },

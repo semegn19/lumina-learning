@@ -317,7 +317,10 @@ export interface EventItem {
   featured_guest?: string | undefined;
   created_by?: number | string | { id: number; first_name?: string; last_name?: string; profile_picture?: string } | undefined;
   user?: number | string | { id: number; first_name?: string; last_name?: string; profile_picture?: string } | undefined;
+  picture?: string | null | undefined;
   image?: string | null | undefined;
+  thumbnail?: string | null | undefined;
+  cover_image?: string | null | undefined;
   is_registered?: boolean | undefined;
   created_at?: string | undefined;
   updated_at?: string | undefined;
@@ -331,7 +334,10 @@ export interface EventCreatePayload {
   price: number | string;
   currency: string;
   featured_guest?: string | undefined;
+  picture?: File | null | undefined;
   image?: File | null | undefined;
+  thumbnail?: File | null | undefined;
+  cover_image?: File | null | undefined;
 }
 
 export interface EventRegistration {
