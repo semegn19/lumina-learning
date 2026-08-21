@@ -11,6 +11,7 @@ import { TimePicker } from "@/components/ui/time-picker";
 import { ListOptionChooser } from "@/components/ui/list-option-chooser";
 import { getEventById, updateEvent } from "@/lib/events-api";
 import { getApiErrorMessage } from "@/lib/api-client";
+import { getMediaUrl } from "@/lib/utils";
 
 export const Route = createFileRoute("/manage/events/$eventId/edit")({
   head: () => ({
@@ -71,9 +72,9 @@ function EditEvent() {
       setFeaturedGuest(event.featured_guest || "");
       setPrice(String(event.price ?? "0.00"));
       setCurrency(event.currency || "USD");
-      const existingImg = event.image || event.thumbnail || event.cover_image;
+      const existingImg = event.picture || event.image || event.thumbnail || event.cover_image;
       if (existingImg) {
-        setImagePreview(existingImg);
+        setImagePreview(getMediaUrl(existingImg));
       }
     }
   }, [event]);

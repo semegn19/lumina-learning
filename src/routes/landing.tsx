@@ -535,7 +535,7 @@ function Landing() {
           ) : displayEvents.length > 0 ? (
             <div className="mt-12 grid gap-6 text-left md:grid-cols-3">
               {displayEvents.map((e, i) => {
-                const eventImg = getMediaUrl(e.image || e.thumbnail || e.cover_image) || (i % 2 === 0 ? bannerStudent : courseTypography);
+                const eventImg = getMediaUrl(e.picture || e.image || e.thumbnail || e.cover_image) || (i % 2 === 0 ? bannerStudent : courseTypography);
                 const priceText = formatPrice(e.price, e.currency);
 
                 return (

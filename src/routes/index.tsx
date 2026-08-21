@@ -222,7 +222,7 @@ function StudentDashboard() {
         title: e.title,
         description: e.description || "Join us for an inspiring session designed to level up your craft.",
         price: formatPrice(e.price, e.currency),
-        image: getMediaUrl(e.image || e.thumbnail || e.cover_image) || (idx % 2 === 0 ? courseTypography : courseUx),
+        image: getMediaUrl(e.picture || e.image || e.thumbnail || e.cover_image) || (idx % 2 === 0 ? courseTypography : courseUx),
         is_registered: Boolean(e.is_registered),
       };
     });

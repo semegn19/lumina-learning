@@ -43,8 +43,9 @@ export async function createEvent(
     formData.append("featured_guest", payload.featured_guest);
   }
 
-  const file = payload.image || payload.thumbnail || payload.cover_image;
+  const file = payload.picture || payload.image || payload.thumbnail || payload.cover_image;
   if (file instanceof File) {
+    formData.append("picture", file);
     formData.append("image", file);
     formData.append("thumbnail", file);
     formData.append("cover_image", file);
@@ -72,8 +73,9 @@ export async function updateEvent(
   if (payload.currency !== undefined) formData.append("currency", payload.currency);
   if (payload.featured_guest !== undefined) formData.append("featured_guest", payload.featured_guest);
 
-  const file = payload.image || payload.thumbnail || payload.cover_image;
+  const file = payload.picture || payload.image || payload.thumbnail || payload.cover_image;
   if (file instanceof File) {
+    formData.append("picture", file);
     formData.append("image", file);
     formData.append("thumbnail", file);
     formData.append("cover_image", file);

@@ -147,7 +147,7 @@ function EventListing() {
           <>
             <section className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {eventsList.map((e) => {
-                const imgUrl = getMediaUrl(e.image || e.thumbnail || e.cover_image) || courseTypography;
+                const imgUrl = getMediaUrl(e.picture || e.image || e.thumbnail || e.cover_image) || courseTypography;
                 const priceFormatted = formatPrice(e.price, e.currency);
 
                 const { dateStr, timeStr } = formatBackendDateTime(e.date);
