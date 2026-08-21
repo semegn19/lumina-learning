@@ -50,12 +50,18 @@ function isAuthBypassUrl(url?: string): boolean {
   return AUTH_BYPASS_PATHS.some((path) => url.includes(path) || url.endsWith(path));
 }
 
-// ── Request interceptor — attach token ───────
+// ── Request interceptor — attach token & handle FormData ───────
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = tokenStorage.getAccess();
   if (token && config.headers) {
     config.headers["Authorization"] = `Bearer ${token}`;
   }
+
+  // If data is FormData, remove hardcoded Content-Type so browser/Axios attaches boundary
+  if (config.data instanceof FormData && config.headers) {
+    delete config.headers["Content-Type"];
+  }
+
   return config;
 });
 

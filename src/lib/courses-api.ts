@@ -124,8 +124,12 @@ export async function createLesson(
   form.append("title", payload.title);
   form.append("description", payload.description);
   form.append("order", String(payload.order));
-  if (payload.video_file) form.append("video_file", payload.video_file);
-  if (payload.pdf_resource) form.append("pdf_resource", payload.pdf_resource);
+  if (payload.video_file instanceof File) {
+    form.append("video_file", payload.video_file);
+  }
+  if (payload.pdf_resource instanceof File) {
+    form.append("pdf_resource", payload.pdf_resource);
+  }
 
   const { data } = await api.post<Lesson>(`/api/courses/${courseId}/lessons/`, form, {
     timeout: 0,
